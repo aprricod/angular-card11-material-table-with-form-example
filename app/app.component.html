@@ -1,0 +1,56 @@
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+
+<form [formGroup]="form" autocomplete="off">
+    <mat-table [dataSource]="dataSource">
+
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- Id Column -->
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.get('id').value}}. </mat-cell>
+      </ng-container>
+
+      <!-- User Column -->
+      <ng-container matColumnDef="userId">
+        <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
+        <mat-cell *matCellDef="let element" [formGroup]="element">
+          <mat-form-field floatLabel="never">
+            <mat-select formControlName="userId" (selectionChange)="onUserChange($event, element)" required>
+              <mat-option *ngFor="let user of users" [value]="user.id">
+                {{ user.username }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+        <mat-cell *matCellDef="let element;" [formGroup]="element">
+          <mat-form-field floatLabel="never" *ngIf="element.get('userId').value !== 3">
+            <input matInput placeholder="Title" formControlName="title" required>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+</form>
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Form value
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <code>
+      {{form.value | json}}
+    </code>
+  </mat-expansion-panel>
+</mat-accordion>
